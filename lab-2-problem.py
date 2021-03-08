@@ -3,24 +3,27 @@ import math
 
 class Game():
 
+    money = 0
+
     def __init__(self, location = {"x":[-1000,1000], "y":[-1000,1000]}, money = 0):
 
-        self.money = money
+        Game.money = money
         self.location = location
 
-    def set_money(self, count):
-        self.money = count
+    @staticmethod
+    def set_money(count):
+        Game.money = count
 
-    def print_money_amount(self):
-        print(f"You have {self.money} left")
+    @staticmethod
+    def print_money_amount():
+        print(f"You have {Game.money} left")
 
     def __del__(self):
         print("\nGame has been removed")
 
-class Vehicle():
+class Vehicle(Game):
 
     def __init__(self,
-                game,
                 speed = 10,
                 vehicle_level = 1,
                 health = 1000,
@@ -30,8 +33,7 @@ class Vehicle():
                            4:{"health":2000, "speed":40, "price":4000}}
                 ):
 
-        self.game = game
-        # Game.__init__(self)
+        Game.__init__(self)
         self.speed = speed
         self.vehicle_level = vehicle_level
         self.health = health
@@ -58,8 +60,8 @@ class Vehicle():
         if self.vehicle_level < 4:
             price = up_dict[self.vehicle_level+1]["price"]
             
-            if game.money >= price:
-                game.money = game.money - price
+            if Game.money >= price:
+                Game.money = Game.money - price
                 self.health = up_dict[self.vehicle_level+1]["health"]
                 self.speed = up_dict[self.vehicle_level+1]["speed"]
                 new_level = self.vehicle_level + 1
@@ -73,17 +75,15 @@ class Vehicle():
     def __del__(self):
         print("\nVehicle has been removed")
 
-class Weapon():
+class Weapon(Game):
 
     def __init__(self,
-                game,
                 damage = 100,
                 weapon_level = 1,
                 weapon_up_dict = {2:{"damage":130, "price":1500}, 3:{"damage":150, "price":2000}, 4:{"damage":200, "price":3000}}
                 ):
 
-        self.game = game
-        # Game.__init__(self)
+        Game.__init__(self)
         self.damage = damage
         self.weapon_level = weapon_level
         self.weapon_up_dict = weapon_up_dict
@@ -100,8 +100,8 @@ class Weapon():
         if self.weapon_level < 4:
             price = up_dict[self.weapon_level+1]["price"]
             
-            if game.money >= price:
-                game.money = game.money - price
+            if Game.money >= price:
+                Game.money = Game.money - price
                 self.damage = up_dict[self.weapon_level+1]["damage"]
                 new_level = self.weapon_level + 1
                 self.weapon_level = new_level
@@ -115,17 +115,15 @@ class Weapon():
     def __del__(self):
         print(f"\nWeapon has been removed")
 
-class Armor():
+class Armor(Game):
 
     def __init__(self,
-                game,
                 armour_health = 1000, 
                 armor_level = 1, 
                 armor_up_dict = {2:{"armour_health":1300, "price":1500}, 3:{"armour_health":1500, "price":2000}, 4:{"armour_health":2000, "price":3000}}
                 ):
 
-        self.game = game
-        # Game.__init__(self)
+        Game.__init__(self)
         self.armour_health = armour_health
         self.armor_level = armor_level
         self.armor_up_dict = armor_up_dict
@@ -138,9 +136,9 @@ class Armor():
         if self.armor_level < 4:
             price = up_dict[self.armor_level+1]["price"]
             
-            if game.money >= price:
+            if Game.money >= price:
                 # print(id(Game.money))
-                game.money -= price
+                Game.money -= price
                 # print(id(Game.money))
                 self.armour_health = up_dict[self.armor_level+1]["armour_health"]
                 new_level = self.armor_level + 1
@@ -159,7 +157,6 @@ class Tier3(Vehicle, Weapon, Armor):
 
     def __init__(self,
                 name,
-                game,
                 upgrade_price = 5000,
                 speed = 50,
                 vehicle_level = 1,
@@ -176,11 +173,10 @@ class Tier3(Vehicle, Weapon, Armor):
                 armor_up_dict = {2:{"armour_health":2300, "price":2500}, 3:{"armour_health":2500, "price":3000}, 4:{"armour_health":3000, "price":3500}}           
                 ):
 
-        Vehicle.__init__(self, game, speed, vehicle_level, health, coordinates, vehicle_up_dict)
-        Weapon.__init__(self, game, damage, weapon_level, weapon_up_dict)
-        Armor.__init__(self, game, armour_health, armor_level, armor_up_dict)
+        Vehicle.__init__(self, speed, vehicle_level, health, coordinates, vehicle_up_dict)
+        Weapon.__init__(self, damage, weapon_level, weapon_up_dict)
+        Armor.__init__(self, armour_health, armor_level, armor_up_dict)
 
-        self.game = game
         self.name = name
         self.upgrade_price = upgrade_price
         
@@ -201,10 +197,9 @@ class Tier3(Vehicle, Weapon, Armor):
     def upgrade(self):
         # Game.print_money_amount()
         if self.vehicle_level >= 3 and self.weapon_level >= 3 and self.armor_level >= 3:
-            if game.money >= self.upgrade_price:
+            if Game.money >= self.upgrade_price:
 
                 new_tier = Tier2(speed = 90,
-                                game = self.game,
                                 name = self.name,
                                 vehicle_level = 1,
                                 health = 2000,
@@ -246,7 +241,6 @@ class Tier2(Vehicle, Weapon, Armor):
 
     def __init__(self,
                 name,
-                game,
                 upgrade_price = 7000,
                 speed = 90,
                 vehicle_level = 1,
@@ -263,11 +257,10 @@ class Tier2(Vehicle, Weapon, Armor):
                 armor_up_dict = {2:{"armour_health":2300, "price":2500}, 3:{"armour_health":2500, "price":3000}, 4:{"armour_health":3000, "price":3500}}           
                 ):
 
-        Vehicle.__init__(self, game, speed, vehicle_level, health, coordinates, vehicle_up_dict)
-        Weapon.__init__(self, game, damage, weapon_level, weapon_up_dict)
-        Armor.__init__(self, game, armour_health, armor_level, armor_up_dict)
+        Vehicle.__init__(self, speed, vehicle_level, health, coordinates, vehicle_up_dict)
+        Weapon.__init__(self, damage, weapon_level, weapon_up_dict)
+        Armor.__init__(self, armour_health, armor_level, armor_up_dict)
 
-        self.game = game
         self.name = name
         self.upgrade_price = upgrade_price
         
@@ -288,10 +281,9 @@ class Tier2(Vehicle, Weapon, Armor):
     def upgrade(self):
 
         if self.vehicle_level >= 3 and self.weapon_level >= 3 and self.armor_level >= 3:
-            if game.money >= self.upgrade_price:
+            if Game.money >= self.upgrade_price:
 
                 new_tier = Tier1(speed = 90,
-                                game = self.game,
                                 vehicle_level = 1,
                                 health = 3000,
                                 coordinates = self.coordinates,
@@ -330,7 +322,6 @@ class Tier1(Vehicle, Weapon, Armor):
 
     def __init__(self,
                 name,
-                game,
                 upgrade_price = 9000,
                 speed = 90,
                 vehicle_level = 1,
@@ -347,11 +338,10 @@ class Tier1(Vehicle, Weapon, Armor):
                 armor_up_dict = {2:{"armour_health":3300, "price":3500}, 3:{"armour_health":3500, "price":4000}, 4:{"armour_health":4000, "price":4500}}          
                 ):
         
-        Vehicle.__init__(self, game, speed, vehicle_level, health, coordinates, vehicle_up_dict)
-        Weapon.__init__(self, game, damage, weapon_level, weapon_up_dict)
-        Armor.__init__(self, game, armour_health, armor_level, armor_up_dict)
+        Vehicle.__init__(self, speed, vehicle_level, health, coordinates, vehicle_up_dict)
+        Weapon.__init__(self, damage, weapon_level, weapon_up_dict)
+        Armor.__init__(self, armour_health, armor_level, armor_up_dict)
 
-        self.game = game
         self.name = name
         self.upgrade_price = upgrade_price
         
@@ -378,33 +368,33 @@ class Tier1(Vehicle, Weapon, Armor):
 
 game = Game()
 
-t3 = Tier3("T3", game)
+t3 = Tier3("T3")
 
-t3.game.set_money(100000)
-t3.game.print_money_amount()
+t3.set_money(100000)
+t3.print_money_amount()
 
 t3.vehicle_upgrade()
-t3.game.print_money_amount()
+t3.print_money_amount()
 t3.vehicle_upgrade()
-t3.game.print_money_amount()
+t3.print_money_amount()
 t3.vehicle_upgrade()
-t3.game.print_money_amount()
+t3.print_money_amount()
 
 t3.armor_upgrade()
-t3.game.print_money_amount()
+t3.print_money_amount()
 t3.armor_upgrade()
-t3.game.print_money_amount()
+t3.print_money_amount()
 t3.armor_upgrade()
-t3.game.print_money_amount()
+t3.print_money_amount()
 
 t3.weapon_upgrade()
-t3.game.print_money_amount()
+t3.print_money_amount()
 t3.weapon_upgrade()
-t3.game.print_money_amount()
+t3.print_money_amount()
 t3.weapon_upgrade()
-t3.game.print_money_amount()
+t3.print_money_amount()
 
 t2 = t3.upgrade()
-t2.game.print_money_amount()
+t2.print_money_amount()
 t2.vehicle_upgrade()
-t2.game.print_money_amount()
+t2.print_money_amount()
