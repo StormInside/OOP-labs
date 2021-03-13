@@ -18,6 +18,7 @@ class Carriage(metaclass = ABCMeta):
         else:
             return False
 
+
     @abstractmethod
     def del_passenger_from_list(self, name, surname, year):
 
