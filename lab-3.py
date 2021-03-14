@@ -1,4 +1,5 @@
 from abc import abstractmethod, ABCMeta
+import collections.abc
 
 class Carriage(metaclass = ABCMeta):
 
@@ -31,6 +32,27 @@ class Carriage(metaclass = ABCMeta):
         else:
             return False
 
+    def get_spaces(self, num, ln):
+        
+        fr = ln - len(num)
+        if fr != 0:
+            if fr % 2 == 0:
+                return " "*(fr//2)+num+" "*(fr//2)
+            else:
+                return " "*(fr//2)+num+" "*(fr//2+1)
+        else:
+            return num
+
+    def get_free_text(self, ln):
+
+        if self.has_place:
+            num = str(self.max_count - len(self.passengers_list))
+            if len(num) <= ln:
+                return self.get_spaces(num, ln)
+            else:
+                return self.get_spaces("M", ln)
+        else:
+            return self.get_spaces("0", ln)
 
     @abstractmethod
     def has_place(self):
@@ -97,17 +119,59 @@ class Seat(Сompartment):
         print(f"{surname} {name} got linen in {self.type} N:{super().__str__()}")
 
 
+class Train(collections.abc.Sequence):
 
-# class Train():
+    def __init__(self, code = "1234567"):
+        
+        self.code = code
+        self.max_count = 20
+        self.list = []
 
-    # def __init__(self):
-    #     pass
 
-    # def __str__(self):
-    #     return super().__str__()
+    def add_carriage(self, carriage):
 
-    # def __del__(self):
-    #     print("///Train has been removed///")
+        if isinstance(carriage, Carriage):
+            self.list.append(carriage)
+
+    def __getitem__(self, key):
+        if isinstance(key, int):
+            if key < len(self.list) and key > len(self.list)*-1:
+                return self.list[key]
+            else:
+                raise IndexError("Index out of range")
+        else:
+            raise TypeError("Key must be int")
+
+    def print_train(self):
+
+        d = {"Seat": "П", "Сompartment": "К"}
+        text = ""
+        text += "\n    oooOOOOOOOOOOO\n   o   ____ "
+        for carriage in self.list:
+            text += ":::::::::::::::::: "
+        text += "\n   Y_,_|[]| "
+        for carriage in self.list:
+            text += f"|[]  {d[carriage.type]}  []{carriage.get_free_text(5)}[]| "
+        text += "\n  {|_|_|__|;"
+        for carriage in self.list:
+            text += f"|________________|;"
+        text += "\n   /oo--OO  "
+        for carriage in self.list:
+            text += " oo oo      oo oo  "
+        text += "\n"
+
+        print(text)
+
+    def __len__(self):
+        return len(self.list)
+
+    def __str__(self):
+        return f"Train with {len(self.list)} carriages and N:{self.code}"
+
+    def __del__(self):
+        print("///Train has been removed///")
+
+
 
 if __name__ == "__main__":
 
@@ -115,18 +179,28 @@ if __name__ == "__main__":
     print(c)
     c.add_passenger_to_list("Yurii", "Agafonow", 2001)
     print(c.passengers_list)
-    c.del_passenger_from_list("Yuri", "Agafonow", 2001)
+    # c.del_passenger_from_list("Yuri", "Agafonow", 2001)
+    # print(c.passengers_list)
+    # c.del_passenger_from_list("Yurii", "Agafonow", 2001)
     print(c.passengers_list)
-    c.del_passenger_from_list("Yurii", "Agafonow", 2001)
-    print(c.passengers_list)
+
 
     s = Seat()
     print(s)
     s.add_passenger_to_list("Yurii", "Agafonow", 2001)
     print(s.passengers_list)
-    s.del_passenger_from_list("Yuri", "Agafonow", 2001)
-    print(s.passengers_list)
-    s.del_passenger_from_list("Yurii", "Agafonow", 2001)
+    # s.del_passenger_from_list("Yuri", "Agafonow", 2001)
+    # print(s.passengers_list)
+    # s.del_passenger_from_list("Yurii", "Agafonow", 2001)
     print(s.passengers_list)
 
-
+    t = Train()
+    print(t)
+    t.add_carriage(s)
+    # t.add_carriage(s)
+    t.add_carriage(s)
+    t.add_carriage(c)
+    for c in t:
+        print(c)
+    print(t)
+    t.print_train()
