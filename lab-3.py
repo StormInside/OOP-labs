@@ -32,6 +32,7 @@ class Carriage(metaclass = ABCMeta):
         else:
             return False
 
+    # @abstractmethod
     def get_spaces(self, num, ln):
         
         fr = ln - len(num)
@@ -43,6 +44,7 @@ class Carriage(metaclass = ABCMeta):
         else:
             return num
 
+    # @abstractmethod
     def get_free_text(self, ln):
 
         if self.has_place:
@@ -92,6 +94,11 @@ class Сompartment(Carriage):
         else:
             print(f"No such person {name} {surname} {year} in {self.type} N:{super().__str__()}")
 
+    # def get_spaces(self, num, ln):
+    #     super().get_spaces()
+
+    # def get_free_text(self, ln):
+    #     super().get_free_text()
 
     def has_place(self):
         return super().has_place()
@@ -132,6 +139,14 @@ class Train(collections.abc.Sequence):
 
         if isinstance(carriage, Carriage):
             self.list.append(carriage)
+
+    def del_carriage(self, number):
+
+        if number < len(self.list):
+            rm = self.list.pop(number-1)
+            print(f"Removed {rm} from {self.__str__()}")
+        else:
+            raise IndexError("No such item in Train")
 
     def __getitem__(self, key):
         if isinstance(key, int):
@@ -196,11 +211,15 @@ if __name__ == "__main__":
 
     t = Train()
     print(t)
+    t.print_train()
     t.add_carriage(s)
+    t.print_train()
     # t.add_carriage(s)
     t.add_carriage(s)
     t.add_carriage(c)
     for c in t:
         print(c)
     print(t)
+    t.print_train()
+    t.del_carriage(1)
     t.print_train()
