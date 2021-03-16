@@ -32,29 +32,13 @@ class Carriage(metaclass = ABCMeta):
         else:
             return False
 
-    # @abstractmethod
+    @abstractmethod
     def get_spaces(self, num, ln):
-        
-        fr = ln - len(num)
-        if fr != 0:
-            if fr % 2 == 0:
-                return " "*(fr//2)+num+" "*(fr//2)
-            else:
-                return " "*(fr//2)+num+" "*(fr//2+1)
-        else:
-            return num
+        pass
 
-    # @abstractmethod
+    @abstractmethod
     def get_free_text(self, ln):
-
-        if self.has_place:
-            num = str(self.max_count - len(self.passengers_list))
-            if len(num) <= ln:
-                return self.get_spaces(num, ln)
-            else:
-                return self.get_spaces("M", ln)
-        else:
-            return self.get_spaces("0", ln)
+        pass
 
     @abstractmethod
     def has_place(self):
@@ -94,12 +78,28 @@ class Сompartment(Carriage):
         else:
             print(f"No such person {name} {surname} {year} in {self.type} N:{super().__str__()}")
 
-    # def get_spaces(self, num, ln):
-    #     super().get_spaces()
+    def get_spaces(self, num, ln):
 
-    # def get_free_text(self, ln):
-    #     super().get_free_text()
+        fr = ln - len(num)
+        if fr != 0:
+            if fr % 2 == 0:
+                return " "*(fr//2)+num+" "*(fr//2)
+            else:
+                return " "*(fr//2)+num+" "*(fr//2+1)
+        else:
+            return num
 
+    def get_free_text(self, ln):
+        
+        if self.has_place:
+            num = str(self.max_count - len(self.passengers_list))
+            if len(num) <= ln:
+                return self.get_spaces(num, ln)
+            else:
+                return self.get_spaces("M", ln)
+        else:
+            return self.get_spaces("0", ln)
+ 
     def has_place(self):
         return super().has_place()
 
@@ -214,12 +214,12 @@ if __name__ == "__main__":
     t.print_train()
     t.add_carriage(s)
     t.print_train()
-    # t.add_carriage(s)
+    t.add_carriage(s)
     t.add_carriage(s)
     t.add_carriage(c)
     for c in t:
         print(c)
-    print(t)
+    # print(t)
     t.print_train()
-    t.del_carriage(1)
-    t.print_train()
+    # t.del_carriage(1)
+    # t.print_train()
